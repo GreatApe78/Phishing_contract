@@ -8,13 +8,17 @@ contract Banco {
         owner = tx.origin;
     }
 
-    function Sacar() public payable {
-        require(owner == tx.origin, "nao eh o dono");
+    function Depositar() public payable {}
 
-        (bool callSuccess, ) = payable(msg.sender).call{
-            value: address(this).balance
-        }("");
+    function Sacar(address _to, uint256 _amount) public {
+        require(tx.origin == owner, "nao eh o dono");
+
+        (bool callSuccess, ) = payable(_to).call{value: _amount}("");
 
         require(callSuccess, "Call failed");
+    }
+
+    function get_balance() public view returns (uint256) {
+        return address(this).balance;
     }
 }

